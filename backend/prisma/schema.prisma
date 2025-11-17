@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoomStatus {
+  OPEN
+  FINISHED
+}
+
+enum UserRole {
+  HOST
+  GUEST
+}
+
+model Room {
+  id             String     @id @default(uuid())
+  code           String     @unique
+  status         RoomStatus @default(OPEN)
+  hostId         String?    @map("host_id")           
+  createdAt      DateTime   @default(now()) @map("created_at")
+  finishedAt     DateTime?  @map("finished_at")
+  winnerMovieId  String?    @map("winner_movie_id")
+
+  host           RoomUser?  @relation("HostRelation", fields: [hostId], references: [id])
+  winnerMovie    Movie?     @relation("WinnerRelation", fields: [winnerMovieId], references: [id])
+  users          RoomUser[] @relation("RoomUsers")
+  movies         Movie[]    @relation("RoomMovies")
+
+  @@map("rooms")
+}
+
+model RoomUser {
+  id          String   @id @default(uuid())
+  roomId      String   @map("room_id")
+  displayName String   @map("display_name")
+  role        UserRole
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  room              Room    @relation("RoomUsers", fields: [roomId], references: [id], onDelete: Cascade)
+  hostedRooms       Room[]  @relation("HostRelation")
+  suggestedMovies   Movie[] @relation("SuggestedMovies")
+
+  @@map("room_users")
+}
+
+model Movie {
+  id            String   @id @default(uuid())
+  roomId        String   @map("room_id")
+  suggestedById String   @map("suggested_by_id")
+  title         String
+  year          Int?
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  room          Room       @relation("RoomMovies", fields: [roomId], references: [id], onDelete: Cascade)
+  suggestedBy   RoomUser   @relation("SuggestedMovies", fields: [suggestedById], references: [id])
+  wonRooms      Room[]     @relation("WinnerRelation")
+
+  @@map("movies")
+}
