@@ -1,0 +1,115 @@
+# ===================================
+# DEPENDÊNCIAS
+# ===================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# ===================================
+# VARIÁVEIS DE AMBIENTE
+# ===================================
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+
+# ===================================
+# BUILD / DIST
+# ===================================
+dist/
+build/
+*.js.map
+
+
+# ===================================
+# TYPESCRIPT
+# ===================================
+*.tsbuildinfo
+
+
+# ===================================
+# LOGS
+# ===================================
+logs/
+*.log
+
+
+# ===================================
+# SISTEMA OPERACIONAL
+# ===================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+
+# ===================================
+# IDE / EDITORES
+# ===================================
+# VSCode
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# WebStorm / IntelliJ
+.idea/
+*.iml
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+
+# ===================================
+# TESTES
+# ===================================
+coverage/
+.nyc_output/
+*.lcov
+
+
+# ===================================
+# TEMPORÁRIOS
+# ===================================
+*.tmp
+*.temp
+.cache/
+
+
+# ===================================
+# PRISMA
+# ===================================
+# Não ignorar migrations - elas devem ser versionadas!
+# prisma/migrations/
+
+
+# ===================================
+# REDIS / BULL
+# ===================================
+dump.rdb
+
+
+# ===================================
+# DOCKER (opcional)
+# ===================================
+# Descomente se não quiser versionar
+# docker-compose.override.yml
