@@ -41,6 +41,11 @@ export class GetRoomUseCase {
           },
         } : null,
       },
+      users: room.users.map(user => ({ 
+        id: user.id,
+        displayName: user.displayName,
+        role: user.role,
+      })),
       movies: room.movies.map(movie => ({
         id: movie.id,
         title: movie.title,
