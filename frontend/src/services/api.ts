@@ -11,7 +11,6 @@ export const api = axios.create({
 
 // Interceptor para adicionar token em todas as requisições
 api.interceptors.request.use((config) => {
-  // ✅ MUDOU: localStorage → sessionStorage
   const token = sessionStorage.getItem('@MovieNight:token');
   
   if (token) {

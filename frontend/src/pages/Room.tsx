@@ -32,7 +32,6 @@ export function Room() {
     if (!code) return;
 
     try {
-      // ✅ MUDANÇA 1: Só mostra loading na primeira vez, não durante polling
       if (!isPolling) {
         setLoading(true);
       }
@@ -48,17 +47,14 @@ export function Room() {
     }
   }
 
-  // ✅ MUDANÇA 2: Polling de 3s → 5s (mais suave)
   useEffect(() => {
-    // Primeira chamada (com loading)
     fetchRoom(false);
 
     const interval = setInterval(() => {
       if (!isFinished) {
-        // Chamadas seguintes (sem loading, não pisca)
         fetchRoom(true);
       }
-    }, 5000); // ✅ 5 segundos (antes era 3)
+    }, 5000); 
 
     return () => clearInterval(interval);
   }, [code, isFinished]);
@@ -78,7 +74,7 @@ export function Room() {
 
       setMovieTitle('');
       setMovieYear('');
-      // ✅ MUDANÇA 3: Atualizar sem loading após adicionar filme
+      
       await fetchRoom(true);
     } catch (err: any) {
       alert(err.response?.data?.error || 'Erro ao adicionar filme');
@@ -114,7 +110,7 @@ export function Room() {
     navigate('/');
   }
 
-  // ✅ MUDANÇA 4: Só mostra loading se NÃO tiver dados ainda
+
   if (loading && !room) {
     return <Loading message="Carregando sala..." />;
   }

@@ -12,7 +12,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [roomCode, setRoomCode] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<UserRole | null>(null);
 
-  // ✅ MUDOU: localStorage → sessionStorage
   useEffect(() => {
     const storedToken = sessionStorage.getItem('@MovieNight:token');
     const storedRoomCode = sessionStorage.getItem('@MovieNight:roomCode');
@@ -26,7 +25,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   function login(newToken: string, newRoomCode: string, role: UserRole) {
-    // ✅ MUDOU: localStorage → sessionStorage
     sessionStorage.setItem('@MovieNight:token', newToken);
     sessionStorage.setItem('@MovieNight:roomCode', newRoomCode);
     sessionStorage.setItem('@MovieNight:userRole', role);
@@ -37,7 +35,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   function logout() {
-    // ✅ MUDOU: localStorage → sessionStorage
     sessionStorage.removeItem('@MovieNight:token');
     sessionStorage.removeItem('@MovieNight:roomCode');
     sessionStorage.removeItem('@MovieNight:userRole');

@@ -9,7 +9,7 @@ export async function scheduleRoomCleanup() {
     {},
     {
       repeat: {
-        pattern: '0 0 * * *', // Todo dia à meia-noite
+        pattern: '0 0 * * *', 
       },
       removeOnComplete: true,
       removeOnFail: false,
