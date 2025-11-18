@@ -12,19 +12,24 @@ import { FinishRoomUseCase } from '../useCases/FinishRoomUseCase';
 import { createRoomSchema, joinRoomSchema, addMovieSchema } from './validators';
 
 export class RoomsController {
+  // SEM CONSTRUCTOR! Cada método instancia o que precisa
+
   async createRoom(req: Request, res: Response) {
     const validatedData = createRoomSchema.parse(req.body);
 
+    // Instanciar dependências
     const roomRepository = new RoomRepository();
     const roomUserRepository = new RoomUserRepository();
     const roomService = new RoomService(roomRepository);
 
+    // Instanciar use case
     const useCase = new CreateRoomUseCase(
       roomRepository,
       roomUserRepository,
       roomService
     );
 
+    // Executar
     const result = await useCase.execute({
       hostName: validatedData.hostName,
     });
@@ -38,16 +43,19 @@ export class RoomsController {
   async joinRoom(req: Request, res: Response) {
     const validatedData = joinRoomSchema.parse(req.body);
 
+    // Instanciar dependências
     const roomRepository = new RoomRepository();
     const roomUserRepository = new RoomUserRepository();
     const roomService = new RoomService(roomRepository);
 
+    // Instanciar use case
     const useCase = new JoinRoomUseCase(
       roomRepository,
       roomUserRepository,
       roomService
     );
 
+    // Executar
     const result = await useCase.execute({
       roomCode: validatedData.roomCode,
       displayName: validatedData.displayName,
@@ -63,10 +71,13 @@ export class RoomsController {
     const { code } = req.params;
     const currentUserId = req.user!.sub;
 
+    // Instanciar dependências
     const roomRepository = new RoomRepository();
 
+    // Instanciar use case
     const useCase = new GetRoomUseCase(roomRepository);
 
+    // Executar
     const result = await useCase.execute({
       roomCode: code,
       currentUserId,
@@ -83,11 +94,13 @@ export class RoomsController {
     const currentUserId = req.user!.sub;
     const validatedData = addMovieSchema.parse(req.body);
 
+    // Instanciar dependências
     const roomRepository = new RoomRepository();
     const movieRepository = new MovieRepository();
     const movieService = new MovieService(movieRepository);
     const roomService = new RoomService(roomRepository);
 
+    // Instanciar use case
     const useCase = new AddMovieUseCase(
       roomRepository,
       movieRepository,
@@ -95,6 +108,7 @@ export class RoomsController {
       roomService
     );
 
+    // Executar
     const result = await useCase.execute({
       roomCode: code,
       currentUserId,
@@ -112,17 +126,20 @@ export class RoomsController {
     const { code } = req.params;
     const hostId = req.user!.sub;
 
+    // Instanciar dependências
     const roomRepository = new RoomRepository();
     const movieRepository = new MovieRepository();
     const movieService = new MovieService(movieRepository);
     const roomService = new RoomService(roomRepository);
 
+    // Instanciar use case
     const useCase = new FinishRoomUseCase(
       roomRepository,
       movieService,
       roomService
     );
 
+    // Executar
     const result = await useCase.execute({
       roomCode: code,
       hostId,
