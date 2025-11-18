@@ -28,30 +28,37 @@ export function Room() {
   const isFinished = room?.room.status === 'FINISHED';
 
   // Buscar dados da sala
-  async function fetchRoom() {
+  async function fetchRoom(isPolling = false) {
     if (!code) return;
 
     try {
-      setLoading(true);
+      // ✅ MUDANÇA 1: Só mostra loading na primeira vez, não durante polling
+      if (!isPolling) {
+        setLoading(true);
+      }
       setError('');
       const response = await roomService.getRoom(code);
       setRoom(response.data);
     } catch (err: any) {
       setError(err.response?.data?.error || 'Erro ao carregar sala');
     } finally {
-      setLoading(false);
+      if (!isPolling) {
+        setLoading(false);
+      }
     }
   }
 
-  // Polling: Atualizar sala a cada 3 segundos
+  // ✅ MUDANÇA 2: Polling de 3s → 5s (mais suave)
   useEffect(() => {
-    fetchRoom();
+    // Primeira chamada (com loading)
+    fetchRoom(false);
 
     const interval = setInterval(() => {
       if (!isFinished) {
-        fetchRoom();
+        // Chamadas seguintes (sem loading, não pisca)
+        fetchRoom(true);
       }
-    }, 3000);
+    }, 5000); // ✅ 5 segundos (antes era 3)
 
     return () => clearInterval(interval);
   }, [code, isFinished]);
@@ -71,7 +78,8 @@ export function Room() {
 
       setMovieTitle('');
       setMovieYear('');
-      await fetchRoom();
+      // ✅ MUDANÇA 3: Atualizar sem loading após adicionar filme
+      await fetchRoom(true);
     } catch (err: any) {
       alert(err.response?.data?.error || 'Erro ao adicionar filme');
     } finally {
@@ -92,7 +100,7 @@ export function Room() {
     try {
       setFinishing(true);
       await roomService.finishRoom(code);
-      await fetchRoom();
+      await fetchRoom(false); // Com loading na finalização
     } catch (err: any) {
       alert(err.response?.data?.error || 'Erro ao finalizar sala');
     } finally {
@@ -106,14 +114,15 @@ export function Room() {
     navigate('/');
   }
 
-  if (loading) {
+  // ✅ MUDANÇA 4: Só mostra loading se NÃO tiver dados ainda
+  if (loading && !room) {
     return <Loading message="Carregando sala..." />;
   }
 
   if (error) {
     return (
       <div className="room-error-container">
-        <ErrorMessage message={error} onRetry={fetchRoom} />
+        <ErrorMessage message={error} onRetry={() => fetchRoom(false)} />
         <Button onClick={() => navigate('/')} variant="secondary">
           Voltar ao início
         </Button>
