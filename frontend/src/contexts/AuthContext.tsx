@@ -12,11 +12,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [roomCode, setRoomCode] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<UserRole | null>(null);
 
-  // Carregar dados do localStorage ao iniciar
+  // ✅ MUDOU: localStorage → sessionStorage
   useEffect(() => {
-    const storedToken = localStorage.getItem('@MovieNight:token');
-    const storedRoomCode = localStorage.getItem('@MovieNight:roomCode');
-    const storedUserRole = localStorage.getItem('@MovieNight:userRole') as UserRole;
+    const storedToken = sessionStorage.getItem('@MovieNight:token');
+    const storedRoomCode = sessionStorage.getItem('@MovieNight:roomCode');
+    const storedUserRole = sessionStorage.getItem('@MovieNight:userRole') as UserRole;
 
     if (storedToken && storedRoomCode && storedUserRole) {
       setToken(storedToken);
@@ -26,9 +26,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   function login(newToken: string, newRoomCode: string, role: UserRole) {
-    localStorage.setItem('@MovieNight:token', newToken);
-    localStorage.setItem('@MovieNight:roomCode', newRoomCode);
-    localStorage.setItem('@MovieNight:userRole', role);
+    // ✅ MUDOU: localStorage → sessionStorage
+    sessionStorage.setItem('@MovieNight:token', newToken);
+    sessionStorage.setItem('@MovieNight:roomCode', newRoomCode);
+    sessionStorage.setItem('@MovieNight:userRole', role);
 
     setToken(newToken);
     setRoomCode(newRoomCode);
@@ -36,9 +37,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   function logout() {
-    localStorage.removeItem('@MovieNight:token');
-    localStorage.removeItem('@MovieNight:roomCode');
-    localStorage.removeItem('@MovieNight:userRole');
+    // ✅ MUDOU: localStorage → sessionStorage
+    sessionStorage.removeItem('@MovieNight:token');
+    sessionStorage.removeItem('@MovieNight:roomCode');
+    sessionStorage.removeItem('@MovieNight:userRole');
 
     setToken(null);
     setRoomCode(null);

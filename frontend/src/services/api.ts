@@ -11,7 +11,8 @@ export const api = axios.create({
 
 // Interceptor para adicionar token em todas as requisições
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('@MovieNight:token');
+  // ✅ MUDOU: localStorage → sessionStorage
+  const token = sessionStorage.getItem('@MovieNight:token');
   
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -25,10 +26,9 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token inválido, limpar localStorage
-      localStorage.removeItem('@MovieNight:token');
-      localStorage.removeItem('@MovieNight:roomCode');
-      localStorage.removeItem('@MovieNight:userRole');
+      sessionStorage.removeItem('@MovieNight:token');
+      sessionStorage.removeItem('@MovieNight:roomCode');
+      sessionStorage.removeItem('@MovieNight:userRole');
       window.location.href = '/';
     }
     return Promise.reject(error);
