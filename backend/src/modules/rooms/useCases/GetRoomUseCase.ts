@@ -41,7 +41,7 @@ export class GetRoomUseCase {
           },
         } : null,
       },
-      users: room.users.map(user => ({ 
+      users: room.users.map(user => ({
         id: user.id,
         displayName: user.displayName,
         role: user.role,

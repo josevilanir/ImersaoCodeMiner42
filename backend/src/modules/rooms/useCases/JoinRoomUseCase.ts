@@ -15,7 +15,7 @@ interface JoinRoomOutput {
     code: string;
     status: string;
   };
-  User: {
+  user: {
     id: string;
     displayName: string;
     role: string;
@@ -62,7 +62,7 @@ export class JoinRoomUseCase {
         code: room.code,
         status: room.status,
       },
-      User: {
+      user: {
         id: guestUser.id,
         displayName: guestUser.displayName,
         role: guestUser.role,
