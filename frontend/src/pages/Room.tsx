@@ -23,6 +23,7 @@ export function Room() {
   const [movieYear, setMovieYear] = useState('');
   const [addingMovie, setAddingMovie] = useState(false);
   const [finishing, setFinishing] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const isHost = userRole === 'HOST';
   const isFinished = room?.room.status === 'FINISHED';
@@ -54,7 +55,7 @@ export function Room() {
       if (!isFinished) {
         fetchRoom(true);
       }
-    }, 5000); 
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [code, isFinished]);
@@ -74,7 +75,7 @@ export function Room() {
 
       setMovieTitle('');
       setMovieYear('');
-      
+
       await fetchRoom(true);
     } catch (err: any) {
       alert(err.response?.data?.error || 'Erro ao adicionar filme');
@@ -96,11 +97,24 @@ export function Room() {
     try {
       setFinishing(true);
       await roomService.finishRoom(code);
-      await fetchRoom(false); // Com loading na finalização
+      await fetchRoom(false);
     } catch (err: any) {
       alert(err.response?.data?.error || 'Erro ao finalizar sala');
     } finally {
       setFinishing(false);
+    }
+  }
+
+  // Copiar código da sala
+  async function handleCopyCode() {
+    if (!room?.room.code) return;
+
+    try {
+      await navigator.clipboard.writeText(room.room.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      alert('Erro ao copiar código. Tente copiar manualmente.');
     }
   }
 
@@ -109,7 +123,6 @@ export function Room() {
     logout();
     navigate('/');
   }
-
 
   if (loading && !room) {
     return <Loading message="Carregando sala..." />;
@@ -142,6 +155,14 @@ export function Room() {
             <div className="room-code">
               <span>Código:</span>
               <strong>{room.room.code}</strong>
+              <button
+                onClick={handleCopyCode}
+                className="copy-button"
+                title="Copiar código"
+              >
+                {copied ? '✓' : '📋'}
+              </button>
+              {copied && <span className="copied-feedback">Copiado!</span>}
             </div>
           </div>
           <Button onClick={handleLeaveRoom} variant="danger">
