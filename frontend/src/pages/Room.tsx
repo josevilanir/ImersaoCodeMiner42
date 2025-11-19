@@ -7,13 +7,14 @@ import { Input } from '../components/ui/Input';
 import { Card } from '../components/ui/Card';
 import { Loading } from '../components/ui/Loading';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
+import { TransferOwnershipModal } from '../components/TransferOwnershipModal';
 import type { RoomDetails, Movie } from '../@types';
 import './Room.css';
 
 export function Room() {
   const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
-  const { userRole, logout } = useAuth();
+  const { userRole, logout, updateToken } = useAuth();
 
   const [room, setRoom] = useState<RoomDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,6 +26,9 @@ export function Room() {
   const [finishing, setFinishing] = useState(false);
   const [copied, setCopied] = useState(false);
   const [deletingMovieId, setDeletingMovieId] = useState<string | null>(null);
+  
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [transferring, setTransferring] = useState(false);
 
   const isHost = userRole === 'HOST';
   const isFinished = room?.room.status === 'FINISHED';
@@ -40,6 +44,16 @@ export function Room() {
       setError('');
       const response = await roomService.getRoom(code);
       setRoom(response.data);
+
+      if (response.data.currentUser.role !== userRole) {
+        console.log('Role mudou! Obtendo novo token...');
+        try {
+          const refreshResponse = await roomService.refreshToken();
+          updateToken(refreshResponse.data.token, refreshResponse.data.role);
+        } catch (refreshError) {
+          console.error('Erro ao renovar token:', refreshError);
+        }
+      }
     } catch (err: any) {
       setError(err.response?.data?.error || 'Erro ao carregar sala');
     } finally {
@@ -104,6 +118,25 @@ export function Room() {
     }
   }
 
+  async function handleTransferOwnership(newHostId: string) {
+    if (!code) return;
+
+    try {
+      setTransferring(true);
+      const response = await roomService.transferOwnership(code, newHostId);
+      
+      setShowTransferModal(false);
+      
+      updateToken(response.data.oldHostToken, 'GUEST');
+      
+      await fetchRoom(false);
+    } catch (err: any) {
+      alert(err.response?.data?.error || 'Erro ao transferir sala');
+    } finally {
+      setTransferring(false);
+    }
+  }
+
   async function handleFinishRoom() {
     if (!code) return;
 
@@ -145,6 +178,8 @@ export function Room() {
     if (isHost) return true;
     return movie.suggestedBy.id === currentUserId;
   }
+
+  const guests = room?.users?.filter(user => user.role === 'GUEST') || [];
 
   if (loading && !room) {
     return <Loading message="Carregando sala..." />;
@@ -287,15 +322,24 @@ export function Room() {
 
         {isHost && !isFinished && (
           <div className="room-footer">
-            <Button
-              onClick={handleFinishRoom}
-              disabled={finishing || !room?.movies || room.movies.length === 0}
-              fullWidth
-            >
-              {finishing
-                ? 'Finalizando...'
-                : '🎲 Finalizar e Sortear Vencedor'}
-            </Button>
+            <div className="room-footer-actions">
+              <Button
+                onClick={() => setShowTransferModal(true)}
+                variant="secondary"
+                disabled={guests.length === 0}
+              >
+                👑 Transferir Sala
+              </Button>
+              <Button
+                onClick={handleFinishRoom}
+                disabled={finishing || !room?.movies || room.movies.length === 0}
+                fullWidth
+              >
+                {finishing
+                  ? 'Finalizando...'
+                  : '🎲 Finalizar e Sortear Vencedor'}
+              </Button>
+            </div>
             {(!room?.movies || room.movies.length === 0) && (
               <p className="finish-warning">
                 Adicione pelo menos um filme antes de finalizar
@@ -304,6 +348,15 @@ export function Room() {
           </div>
         )}
       </div>
+
+      {showTransferModal && (
+        <TransferOwnershipModal
+          guests={guests}
+          onTransfer={handleTransferOwnership}
+          onClose={() => setShowTransferModal(false)}
+          isTransferring={transferring}
+        />
+      )}
     </div>
   );
 }
