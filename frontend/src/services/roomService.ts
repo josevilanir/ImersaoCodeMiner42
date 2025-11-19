@@ -1,10 +1,7 @@
 import { api } from './api';
 import type { Room, RoomUser, Movie } from '../@types';
 
-// ===================================
-// INTERFACES
-// ===================================
-
+// Interfaces
 export interface CreateRoomData {
   room: Room;
   hostUser: RoomUser;
@@ -37,6 +34,7 @@ export interface RoomDetails {
   movies: (Movie & {
     suggestedBy: RoomUser;
   })[];
+  currentUser: RoomUser;
 }
 
 export interface GetRoomResponse {
@@ -62,53 +60,33 @@ export interface FinishRoomResponse {
   error: string | null;
 }
 
-// ===================================
-// SERVIÇO
-// ===================================
+export interface DeleteMovieResponse {
+  data: { message: string };
+  error: string | null;
+}
 
 export const roomService = {
-  // Criar sala
   async createRoom(hostName: string): Promise<CreateRoomResponse> {
-    console.log('📞 roomService.createRoom chamado:', { hostName });
-    
-    try {
-      const response = await api.post<CreateRoomResponse>('/rooms', { hostName });
-      console.log('✅ roomService.createRoom resposta:', response.data);
-      return response.data;
-    } catch (error) {
-      console.error('❌ roomService.createRoom erro:', error);
-      throw error;
-    }
+    const response = await api.post<CreateRoomResponse>('/rooms', { hostName });
+    return response.data;
   },
 
-  // Entrar na sala
   async joinRoom(
     roomCode: string,
     displayName: string
   ): Promise<JoinRoomResponse> {
-    console.log('📞 roomService.joinRoom chamado:', { roomCode, displayName });
-    
-    try {
-      const payload = { roomCode, displayName };
-      console.log('📦 Payload:', payload);
-      
-      const response = await api.post<JoinRoomResponse>('/rooms/join', payload);
-      
-      console.log('✅ roomService.joinRoom resposta:', response.data);
-      return response.data;
-    } catch (error) {
-      console.error('❌ roomService.joinRoom erro:', error);
-      throw error;
-    }
+    const response = await api.post<JoinRoomResponse>('/rooms/join', {
+      roomCode,
+      displayName,
+    });
+    return response.data;
   },
 
-  // Buscar sala
   async getRoom(code: string): Promise<GetRoomResponse> {
     const response = await api.get<GetRoomResponse>(`/rooms/${code}`);
     return response.data;
   },
 
-  // Adicionar filme
   async addMovie(
     code: string,
     title: string,
@@ -121,7 +99,13 @@ export const roomService = {
     return response.data;
   },
 
-  // Finalizar sala
+  async deleteMovie(code: string, movieId: string): Promise<DeleteMovieResponse> {
+    const response = await api.delete<DeleteMovieResponse>(
+      `/rooms/${code}/movies/${movieId}`
+    );
+    return response.data;
+  },
+
   async finishRoom(code: string): Promise<FinishRoomResponse> {
     const response = await api.post<FinishRoomResponse>(`/rooms/${code}/finish`);
     return response.data;

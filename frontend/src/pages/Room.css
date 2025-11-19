@@ -297,4 +297,42 @@
     transform: translateY(-50%) translateX(10px);
   }
 }
+  .movie-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .movie-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .delete-movie-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    opacity: 0.6;
+  }
+
+  .delete-movie-button:hover:not(:disabled) {
+    opacity: 1;
+    background-color: rgba(244, 67, 54, 0.1);
+    transform: scale(1.1);
+  }
+
+  .delete-movie-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.3;
+  }
+
+  .delete-movie-button:active:not(:disabled) {
+    transform: scale(0.95);
+  }
 }

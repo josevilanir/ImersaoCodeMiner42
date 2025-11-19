@@ -24,11 +24,12 @@ export function Room() {
   const [addingMovie, setAddingMovie] = useState(false);
   const [finishing, setFinishing] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [deletingMovieId, setDeletingMovieId] = useState<string | null>(null);
 
   const isHost = userRole === 'HOST';
   const isFinished = room?.room.status === 'FINISHED';
+  const currentUserId = room?.currentUser?.id;
 
-  // Buscar dados da sala
   async function fetchRoom(isPolling = false) {
     if (!code) return;
 
@@ -60,7 +61,6 @@ export function Room() {
     return () => clearInterval(interval);
   }, [code, isFinished]);
 
-  // Adicionar filme
   async function handleAddMovie(e: FormEvent) {
     e.preventDefault();
     if (!code || !movieTitle.trim()) return;
@@ -84,7 +84,26 @@ export function Room() {
     }
   }
 
-  // Finalizar sala e sortear
+  async function handleDeleteMovie(movieId: string, movieTitle: string) {
+    if (!code) return;
+
+    const confirm = window.confirm(
+      `Tem certeza que deseja deletar "${movieTitle}"?`
+    );
+
+    if (!confirm) return;
+
+    try {
+      setDeletingMovieId(movieId);
+      await roomService.deleteMovie(code, movieId);
+      await fetchRoom(true);
+    } catch (err: any) {
+      alert(err.response?.data?.error || 'Erro ao deletar filme');
+    } finally {
+      setDeletingMovieId(null);
+    }
+  }
+
   async function handleFinishRoom() {
     if (!code) return;
 
@@ -105,7 +124,6 @@ export function Room() {
     }
   }
 
-  // Copiar código da sala
   async function handleCopyCode() {
     if (!room?.room.code) return;
 
@@ -118,10 +136,14 @@ export function Room() {
     }
   }
 
-  // Sair da sala
   function handleLeaveRoom() {
     logout();
     navigate('/');
+  }
+
+  function canDeleteMovie(movie: Movie): boolean {
+    if (isHost) return true;
+    return movie.suggestedBy.id === currentUserId;
   }
 
   if (loading && !room) {
@@ -146,7 +168,6 @@ export function Room() {
   return (
     <div className="room-container">
       <div className="room-content">
-        {/* Header */}
         <div className="room-header">
           <div className="room-header-info">
             <h1 className="room-title">
@@ -170,7 +191,6 @@ export function Room() {
           </Button>
         </div>
 
-        {/* Vencedor (se finalizado) */}
         {isFinished && room.room.winnerMovie && (
           <Card className="winner-card">
             <h2 className="winner-title">🎉 Filme Vencedor!</h2>
@@ -185,7 +205,6 @@ export function Room() {
         )}
 
         <div className="room-grid">
-          {/* Adicionar Filme */}
           {!isFinished && (
             <Card className="add-movie-card">
               <h2>Adicionar Filme</h2>
@@ -216,7 +235,6 @@ export function Room() {
             </Card>
           )}
 
-          {/* Lista de Filmes */}
           <Card className="movies-card">
             <h2>
               Filmes Sugeridos ({room?.movies?.length || 0})
@@ -231,16 +249,27 @@ export function Room() {
                       <strong>{movie.title}</strong>
                       {movie.year && <span className="movie-year">({movie.year})</span>}
                     </div>
-                    <span className="movie-suggested-by">
-                      por {movie.suggestedBy.displayName}
-                    </span>
+                    <div className="movie-actions">
+                      <span className="movie-suggested-by">
+                        por {movie.suggestedBy.displayName}
+                      </span>
+                      {!isFinished && canDeleteMovie(movie) && (
+                        <button
+                          onClick={() => handleDeleteMovie(movie.id, movie.title)}
+                          className="delete-movie-button"
+                          disabled={deletingMovieId === movie.id}
+                          title="Deletar filme"
+                        >
+                          {deletingMovieId === movie.id ? '⏳' : '🗑️'}
+                        </button>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>
             )}
           </Card>
 
-          {/* Participantes */}
           <Card className="users-card">
             <h2>Participantes ({room?.users?.length || 0})</h2>
             <ul className="users-list">
@@ -256,7 +285,6 @@ export function Room() {
           </Card>
         </div>
 
-        {/* Botão de Finalizar (apenas para HOST) */}
         {isHost && !isFinished && (
           <div className="room-footer">
             <Button

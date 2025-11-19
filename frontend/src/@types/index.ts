@@ -22,6 +22,7 @@ export interface Movie {
   title: string;
   year?: number;
   suggestedBy: {
+    id: string;
     displayName: string;
     role: UserRole;
   };

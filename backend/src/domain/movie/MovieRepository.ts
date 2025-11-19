@@ -32,4 +32,20 @@ export class MovieRepository {
       where: { roomId },
     });
   }
+
+  async findById(movieId: string) {
+    return await prisma.movie.findUnique({
+      where: { id: movieId },
+      include: {
+        suggestedBy: true,
+        room: true,
+      },
+    });
+  }
+
+  async delete(movieId: string): Promise<void> {
+    await prisma.movie.delete({
+      where: { id: movieId },
+    });
+  }
 }
