@@ -16,6 +16,7 @@ routes.post('/api/v1/rooms/join', (req, res) =>
   roomsController.joinRoom(req, res)
 );
 
+// Rotas autenticadas
 routes.get('/api/v1/rooms/:code', authMiddleware, (req, res) => 
   roomsController.getRoom(req, res)
 );
@@ -24,6 +25,11 @@ routes.post('/api/v1/rooms/:code/movies', authMiddleware, (req, res) =>
   roomsController.addMovie(req, res)
 );
 
+routes.delete('/api/v1/rooms/:code/movies/:movieId', authMiddleware, (req, res) =>
+  roomsController.deleteMovie(req, res)
+);
+
+// Rotas exclusivas do host
 routes.post('/api/v1/rooms/:code/finish', authMiddleware, ensureHostMiddleware, (req, res) =>
   roomsController.finishRoom(req, res)
 );
