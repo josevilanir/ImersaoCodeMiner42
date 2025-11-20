@@ -1,5 +1,5 @@
 import { api } from './api';
-import type { Room, RoomUser, Movie } from '../@types';
+import type { Room, RoomUser, Movie, UserRole } from '../@types';
 
 // Interfaces
 export interface CreateRoomData {
@@ -65,6 +65,27 @@ export interface DeleteMovieResponse {
   error: string | null;
 }
 
+export interface TransferOwnershipData {
+  message: string;
+  newHostToken: string;
+  oldHostToken: string;
+}
+
+export interface TransferOwnershipResponse {
+  data: TransferOwnershipData;
+  error: string | null;
+}
+
+export interface RefreshTokenData {
+  token: string;
+  role: UserRole;
+}
+
+export interface RefreshTokenResponse {
+  data: RefreshTokenData;
+  error: string | null;
+}
+
 export const roomService = {
   async createRoom(hostName: string): Promise<CreateRoomResponse> {
     const response = await api.post<CreateRoomResponse>('/rooms', { hostName });
@@ -103,6 +124,19 @@ export const roomService = {
     const response = await api.delete<DeleteMovieResponse>(
       `/rooms/${code}/movies/${movieId}`
     );
+    return response.data;
+  },
+
+  async transferOwnership(code: string, newHostId: string): Promise<TransferOwnershipResponse> {
+    const response = await api.post<TransferOwnershipResponse>(
+      `/rooms/${code}/transfer`,
+      { newHostId }
+    );
+    return response.data;
+  },
+
+  async refreshToken(): Promise<RefreshTokenResponse> {
+    const response = await api.post<RefreshTokenResponse>('/refresh-token');
     return response.data;
   },
 

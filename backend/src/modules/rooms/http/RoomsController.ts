@@ -10,6 +10,8 @@ import { GetRoomUseCase } from '../useCases/GetRoomUseCase';
 import { AddMovieUseCase } from '../useCases/AddMovieUseCase';
 import { FinishRoomUseCase } from '../useCases/FinishRoomUseCase';
 import { DeleteMovieUseCase } from '../useCases/DeleteMovieUseCase';
+import { TransferOwnershipUseCase } from '../useCases/TransferOwnershipUseCase';
+import { RefreshTokenUseCase } from '../useCases/RefreshTokenUseCase';
 import { createRoomSchema, joinRoomSchema, addMovieSchema } from './validators';
 
 export class RoomsController {
@@ -128,6 +130,50 @@ export class RoomsController {
 
     return res.status(200).json({
       data: { message: 'Movie deleted successfully' },
+      error: null,
+    });
+  }
+
+  async transferOwnership(req: Request, res: Response) {
+    const { code } = req.params;
+    const { newHostId } = req.body;
+    const currentHostId = req.user!.sub;
+
+    const roomRepository = new RoomRepository();
+    const roomUserRepository = new RoomUserRepository();
+
+    const useCase = new TransferOwnershipUseCase(
+      roomRepository,
+      roomUserRepository
+    );
+
+    const result = await useCase.execute({
+      roomCode: code,
+      currentHostId,
+      newHostId,
+    });
+
+    return res.status(200).json({
+      data: {
+        message: 'Ownership transferred successfully',
+        newHostToken: result.newHostToken,
+        oldHostToken: result.oldHostToken,
+      },
+      error: null,
+    });
+  }
+
+  async refreshToken(req: Request, res: Response) {
+    const userId = req.user!.sub;
+
+    const roomUserRepository = new RoomUserRepository();
+
+    const useCase = new RefreshTokenUseCase(roomUserRepository);
+
+    const result = await useCase.execute({ userId });
+
+    return res.status(200).json({
+      data: result,
       error: null,
     });
   }

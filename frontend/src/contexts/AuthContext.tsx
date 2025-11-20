@@ -44,6 +44,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUserRole(null);
   }
 
+  function updateRole(newRole: UserRole) {
+    sessionStorage.setItem('@MovieNight:userRole', newRole);
+    setUserRole(newRole);
+  }
+
+  function updateToken(newToken: string, newRole: UserRole) {
+    sessionStorage.setItem('@MovieNight:token', newToken);
+    sessionStorage.setItem('@MovieNight:userRole', newRole);
+    setToken(newToken);
+    setUserRole(newRole);
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -53,6 +65,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         isAuthenticated: !!token,
         login,
         logout,
+        updateRole,
+        updateToken,
       }}
     >
       {children}

@@ -335,4 +335,25 @@
   .delete-movie-button:active:not(:disabled) {
     transform: scale(0.95);
   }
+    /* Footer actions */
+  .room-footer-actions {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .room-footer-actions button:first-child {
+    flex: 0 0 auto;
+    min-width: 180px;
+  }
+
+  @media (max-width: 640px) {
+    .room-footer-actions {
+      flex-direction: column;
+    }
+
+    .room-footer-actions button:first-child {
+      width: 100%;
+    }
+  }
 }

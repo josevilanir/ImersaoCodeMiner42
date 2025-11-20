@@ -53,6 +53,13 @@ export class RoomRepository {
     });
   }
 
+  async updateHost(roomId: string, newHostId: string) {
+    return await prisma.room.update({
+      where: { id: roomId },
+      data: { hostId: newHostId },
+    });
+  }
+
   async findFinishedRoomsOlderThan(days: number) {
     const thresholdDate = new Date();
     thresholdDate.setDate(thresholdDate.getDate() - days);
