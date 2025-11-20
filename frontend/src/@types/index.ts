@@ -68,4 +68,7 @@ export interface AuthContextData {
   isAuthenticated: boolean;
   login: (token: string, roomCode: string, role: UserRole) => void;
   logout: () => void;
+  updateRole: (newRole: UserRole) => void;
+  updateToken: (newToken: string, newRole: UserRole) => void;
+
 }
