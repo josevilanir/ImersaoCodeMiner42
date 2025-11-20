@@ -1,10 +1,19 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import './Home.css';
 
 export function Home() {
   const navigate = useNavigate();
+  const { isAuthenticated, roomCode } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated && roomCode) {
+      navigate(`/room/${roomCode}`, { replace: true });
+    }
+  }, [isAuthenticated, roomCode, navigate]);
 
   return (
     <div className="home-container">
