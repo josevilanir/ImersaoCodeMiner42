@@ -1,7 +1,7 @@
 .room-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 2rem;
+  background-color: #111827;
 }
 
 .room-content {
@@ -9,300 +9,29 @@
   margin: 0 auto;
 }
 
-.room-error-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  padding: 2rem;
-}
-
-.room-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #1a202c;
-  margin: 0;
-}
-
-/* Winner Card */
-.winner-card {
-  margin-bottom: 2rem;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
-  text-align: center;
-  animation: celebration 0.6s ease-out;
-}
-
-@keyframes celebration {
-  0% {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.winner-title {
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-}
-
-.winner-movie h3 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.winner-movie p {
-  font-size: 1.25rem;
-  opacity: 0.9;
-  margin: 0.25rem 0;
-}
-
-.winner-suggested {
-  margin-top: 1rem;
-  font-size: 1rem !important;
-}
-
-/* Grid */
 .room-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
-/* Add Movie Card */
-.add-movie-card h2,
-.movies-card h2,
-.users-card h2 {
-  font-size: 1.25rem;
-  margin-bottom: 1.5rem;
-  color: #1a202c;
-}
-
-.add-movie-form {
+.room-error-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
   gap: 1rem;
-}
-
-/* Movies List */
-.no-movies {
-  text-align: center;
-  color: #a0aec0;
   padding: 2rem;
 }
 
-.movies-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.movie-item {
-  padding: 1rem;
-  background: #f7fafc;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: background 0.2s;
-}
-
-.movie-item:hover {
-  background: #edf2f7;
-}
-
-.movie-info {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.movie-info strong {
-  color: #1a202c;
-}
-
-.movie-year {
-  color: #718096;
-  font-size: 0.875rem;
-}
-
-.movie-suggested-by {
-  font-size: 0.875rem;
-  color: #718096;
-}
-
-/* Users List */
-.users-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.user-item {
-  padding: 0.75rem 1rem;
-  background: #f7fafc;
-  border-radius: 8px;
-  color: #1a202c;
-}
-
-/* Footer */
-.room-footer {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.finish-warning {
-  text-align: center;
-  color: #e53e3e;
-  font-size: 0.875rem;
-  margin-top: 1rem;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
   .room-container {
     padding: 1rem;
   }
 
-  .room-title {
-    font-size: 1.5rem;
-  }
-
-  .winner-movie h3 {
-    font-size: 1.75rem;
-  }
-
   .room-grid {
     grid-template-columns: 1fr;
   }
-
-@keyframes fadeInOut {
-  0% {
-    opacity: 0;
-    transform: translateY(-50%) translateX(-10px);
-  }
-  10% {
-    opacity: 1;
-    transform: translateY(-50%) translateX(0);
-  }
-  90% {
-    opacity: 1;
-    transform: translateY(-50%) translateX(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-50%) translateX(10px);
-  }
-}
-  .movie-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .movie-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .delete-movie-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    transition: all 0.2s;
-    opacity: 0.6;
-  }
-
-  .delete-movie-button:hover:not(:disabled) {
-    opacity: 1;
-    background-color: rgba(244, 67, 54, 0.1);
-    transform: scale(1.1);
-  }
-
-  .delete-movie-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.3;
-  }
-
-  .delete-movie-button:active:not(:disabled) {
-    transform: scale(0.95);
-  }
-    /* Footer actions */
-  .room-footer-actions {
-    display: flex;
-    gap: 1rem;
-    width: 100%;
-  }
-
-  .room-footer-actions button:first-child {
-    flex: 0 0 auto;
-    min-width: 180px;
-  }
-
-  @media (max-width: 640px) {
-    .room-footer-actions {
-      flex-direction: column;
-    }
-
-    .room-footer-actions button:first-child {
-      width: 100%;
-    }
-  }
-  .user-info {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.user-indicator {
-  color: #3b82f6;
-  font-size: 0.875rem;
-  font-weight: bold;
-  animation: pulse 2s ease-in-out infinite;
-  line-height: 1;
-}
-
-.user-name {
-  flex: 1;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
-}
-
-/* Optional: highlight current user row */
-.user-item:has(.user-indicator) {
-  background-color: rgba(16, 185, 129, 0.05);
-  border-left: 3px solid #10b981;
-  padding-left: calc(1rem - 3px);
-}
 }
