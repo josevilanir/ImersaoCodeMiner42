@@ -1,0 +1,31 @@
+.add-movie-card h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #f9fafb;
+  margin-bottom: 1rem;
+}
+
+.add-movie-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.add-movie-card {
+  background-color: #1f2937;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+}
+
+.add-movie-card h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #f9fafb;
+  margin-bottom: 1rem;
+}
+
+.add-movie-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
