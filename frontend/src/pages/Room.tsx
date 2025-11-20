@@ -34,34 +34,39 @@ export function Room() {
   const isFinished = room?.room.status === 'FINISHED';
   const currentUserId = room?.currentUser?.id;
 
-  async function fetchRoom(isPolling = false) {
-    if (!code) return;
+async function fetchRoom(isPolling = false) {
+  if (!code) return;
 
-    try {
-      if (!isPolling) {
-        setLoading(true);
-      }
-      setError('');
-      const response = await roomService.getRoom(code);
-      setRoom(response.data);
+  try {
+    if (!isPolling) {
+      setLoading(true);
+    }
+    setError('');
+    const response = await roomService.getRoom(code);
+    setRoom(response.data);
 
-      if (response.data.currentUser.role !== userRole) {
-        console.log('Role mudou! Obtendo novo token...');
-        try {
-          const refreshResponse = await roomService.refreshToken();
-          updateToken(refreshResponse.data.token, refreshResponse.data.role);
-        } catch (refreshError) {
-          console.error('Erro ao renovar token:', refreshError);
-        }
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Erro ao carregar sala');
-    } finally {
-      if (!isPolling) {
-        setLoading(false);
+    // SEMPRE verificar se o role mudou comparando com o state atual
+    const currentRoleInDB = response.data.currentUser.role;
+    const currentRoleInState = userRole;
+
+    if (currentRoleInDB !== currentRoleInState) {
+      console.log(`Role mudou de ${currentRoleInState} para ${currentRoleInDB}! Obtendo novo token...`);
+      try {
+        const refreshResponse = await roomService.refreshToken();
+        updateToken(refreshResponse.data.token, refreshResponse.data.role);
+        console.log('Token atualizado com sucesso!');
+      } catch (refreshError) {
+        console.error('Erro ao renovar token:', refreshError);
       }
     }
+  } catch (err: any) {
+    setError(err.response?.data?.error || 'Erro ao carregar sala');
+  } finally {
+    if (!isPolling) {
+      setLoading(false);
+    }
   }
+}
 
   useEffect(() => {
     fetchRoom(false);
