@@ -356,4 +356,37 @@
       width: 100%;
     }
   }
+  .user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-indicator {
+  color: #3b82f6;
+  font-size: 0.875rem;
+  font-weight: bold;
+  animation: pulse 2s ease-in-out infinite;
+  line-height: 1;
+}
+
+.user-name {
+  flex: 1;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Optional: highlight current user row */
+.user-item:has(.user-indicator) {
+  background-color: rgba(16, 185, 129, 0.05);
+  border-left: 3px solid #10b981;
+  padding-left: calc(1rem - 3px);
+}
 }

@@ -310,9 +310,14 @@ export function Room() {
             <ul className="users-list">
               {room?.users?.map((user) => (
                 <li key={user.id} className="user-item">
-                  <span>
-                    {user.displayName}
-                    {user.role === 'HOST' && ' 👑'}
+                  <span className="user-info">
+                    {user.id === currentUserId && (
+                      <span className="user-indicator" title="Você">●</span>
+                    )}
+                    <span className="user-name">
+                      {user.displayName}
+                      {user.role === 'HOST' && ' 👑'}
+                    </span>
                   </span>
                 </li>
               ))}
