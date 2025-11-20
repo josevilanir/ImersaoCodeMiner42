@@ -1,15 +1,18 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { roomService } from '../services/roomService';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Card } from '../components/ui/Card';
 import { Loading } from '../components/ui/Loading';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
+import { Button } from '../components/ui/Button';
+import { RoomHeader } from '../components/room/RoomHeader';
+import { WinnerCard } from '../components/room/WinnerCard';
+import { AddMovieForm } from '../components/room/AddMovieForm';
+import { MoviesList } from '../components/room/MoviesList';
+import { ParticipantsList } from '../components/room/ParticipantsList';
+import { RoomFooter } from '../components/room/RoomFooter';
 import { TransferOwnershipModal } from '../components/TransferOwnershipModal';
 import type { RoomDetails, Movie } from '../@types';
-import { RoomHeader } from '../components/room/RoomHeader';
 import './Room.css';
 
 export function Room() {
@@ -21,8 +24,6 @@ export function Room() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const [movieTitle, setMovieTitle] = useState('');
-  const [movieYear, setMovieYear] = useState('');
   const [addingMovie, setAddingMovie] = useState(false);
   const [finishing, setFinishing] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -35,39 +36,38 @@ export function Room() {
   const isFinished = room?.room.status === 'FINISHED';
   const currentUserId = room?.currentUser?.id;
 
-async function fetchRoom(isPolling = false) {
-  if (!code) return;
+  async function fetchRoom(isPolling = false) {
+    if (!code) return;
 
-  try {
-    if (!isPolling) {
-      setLoading(true);
-    }
-    setError('');
-    const response = await roomService.getRoom(code);
-    setRoom(response.data);
+    try {
+      if (!isPolling) {
+        setLoading(true);
+      }
+      setError('');
+      const response = await roomService.getRoom(code);
+      setRoom(response.data);
 
-    // SEMPRE verificar se o role mudou comparando com o state atual
-    const currentRoleInDB = response.data.currentUser.role;
-    const currentRoleInState = userRole;
+      const currentRoleInDB = response.data.currentUser.role;
+      const currentRoleInState = userRole;
 
-    if (currentRoleInDB !== currentRoleInState) {
-      console.log(`Role mudou de ${currentRoleInState} para ${currentRoleInDB}! Obtendo novo token...`);
-      try {
-        const refreshResponse = await roomService.refreshToken();
-        updateToken(refreshResponse.data.token, refreshResponse.data.role);
-        console.log('Token atualizado com sucesso!');
-      } catch (refreshError) {
-        console.error('Erro ao renovar token:', refreshError);
+      if (currentRoleInDB !== currentRoleInState) {
+        console.log(`Role mudou de ${currentRoleInState} para ${currentRoleInDB}! Obtendo novo token...`);
+        try {
+          const refreshResponse = await roomService.refreshToken();
+          updateToken(refreshResponse.data.token, refreshResponse.data.role);
+          console.log('Token atualizado com sucesso!');
+        } catch (refreshError) {
+          console.error('Erro ao renovar token:', refreshError);
+        }
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Erro ao carregar sala');
+    } finally {
+      if (!isPolling) {
+        setLoading(false);
       }
     }
-  } catch (err: any) {
-    setError(err.response?.data?.error || 'Erro ao carregar sala');
-  } finally {
-    if (!isPolling) {
-      setLoading(false);
-    }
   }
-}
 
   useEffect(() => {
     fetchRoom(false);
@@ -81,21 +81,16 @@ async function fetchRoom(isPolling = false) {
     return () => clearInterval(interval);
   }, [code, isFinished]);
 
-  async function handleAddMovie(e: FormEvent) {
-    e.preventDefault();
-    if (!code || !movieTitle.trim()) return;
+  async function handleAddMovie(title: string, year: string) {
+    if (!code) return;
 
     try {
       setAddingMovie(true);
       await roomService.addMovie(
         code,
-        movieTitle.trim(),
-        movieYear ? parseInt(movieYear) : undefined
+        title.trim(),
+        year ? parseInt(year) : undefined
       );
-
-      setMovieTitle('');
-      setMovieYear('');
-
       await fetchRoom(true);
     } catch (err: any) {
       alert(err.response?.data?.error || 'Erro ao adicionar filme');
@@ -180,7 +175,7 @@ async function fetchRoom(isPolling = false) {
     navigate('/');
   }
 
-  function canDeleteMovie(movie: Movie): boolean {
+  function canDeleteMovie(movie: { id: string; suggestedBy: { id: string } }): boolean {
     if (isHost) return true;
     return movie.suggestedBy.id === currentUserId;
   }
@@ -218,130 +213,39 @@ async function fetchRoom(isPolling = false) {
         />
 
         {isFinished && room.room.winnerMovie && (
-          <Card className="winner-card">
-            <h2 className="winner-title">🎉 Filme Vencedor!</h2>
-            <div className="winner-movie">
-              <h3>{room.room.winnerMovie.title}</h3>
-              {room.room.winnerMovie.year && <p>({room.room.winnerMovie.year})</p>}
-              <p className="winner-suggested">
-                Sugerido por: {room.room.winnerMovie.suggestedBy.displayName}
-              </p>
-            </div>
-          </Card>
+          <WinnerCard movie={room.room.winnerMovie} />
         )}
 
         <div className="room-grid">
           {!isFinished && (
-            <Card className="add-movie-card">
-              <h2>Adicionar Filme</h2>
-              <form onSubmit={handleAddMovie} className="add-movie-form">
-                <Input
-                  label="Título do filme"
-                  type="text"
-                  placeholder="Ex: Matrix"
-                  value={movieTitle}
-                  onChange={(e) => setMovieTitle(e.target.value)}
-                  disabled={addingMovie}
-                  required
-                />
-                <Input
-                  label="Ano (opcional)"
-                  type="number"
-                  placeholder="Ex: 1999"
-                  value={movieYear}
-                  onChange={(e) => setMovieYear(e.target.value)}
-                  disabled={addingMovie}
-                  min="1900"
-                  max={new Date().getFullYear() + 5}
-                />
-                <Button type="submit" fullWidth disabled={addingMovie}>
-                  {addingMovie ? 'Adicionando...' : '+ Adicionar'}
-                </Button>
-              </form>
-            </Card>
+            <AddMovieForm 
+              onSubmit={handleAddMovie}
+              loading={addingMovie}
+            />
           )}
 
-          <Card className="movies-card">
-            <h2>
-              Filmes Sugeridos ({room?.movies?.length || 0})
-            </h2>
-            {!room?.movies || room.movies.length === 0 ? (
-              <p className="no-movies">Nenhum filme adicionado ainda</p>
-            ) : (
-              <ul className="movies-list">
-                {room.movies.map((movie) => (
-                  <li key={movie.id} className="movie-item">
-                    <div className="movie-info">
-                      <strong>{movie.title}</strong>
-                      {movie.year && <span className="movie-year">({movie.year})</span>}
-                    </div>
-                    <div className="movie-actions">
-                      <span className="movie-suggested-by">
-                        por {movie.suggestedBy.displayName}
-                      </span>
-                      {!isFinished && canDeleteMovie(movie) && (
-                        <button
-                          onClick={() => handleDeleteMovie(movie.id, movie.title)}
-                          className="delete-movie-button"
-                          disabled={deletingMovieId === movie.id}
-                          title="Deletar filme"
-                        >
-                          {deletingMovieId === movie.id ? '⏳' : '🗑️'}
-                        </button>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Card>
+          <MoviesList
+            movies={room.movies || []}
+            isFinished={isFinished}
+            canDelete={canDeleteMovie}
+            onDelete={handleDeleteMovie}
+            deletingId={deletingMovieId}
+          />
 
-          <Card className="users-card">
-            <h2>Participantes ({room?.users?.length || 0})</h2>
-            <ul className="users-list">
-              {room?.users?.map((user) => (
-                <li key={user.id} className="user-item">
-                  <span className="user-info">
-                    {user.id === currentUserId && (
-                      <span className="user-indicator" title="Você">●</span>
-                    )}
-                    <span className="user-name">
-                      {user.displayName}
-                      {user.role === 'HOST' && ' 👑'}
-                    </span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </Card>
+          <ParticipantsList
+            users={room.users || []}
+            currentUserId={currentUserId}
+          />
         </div>
 
         {isHost && !isFinished && (
-          <div className="room-footer">
-            <div className="room-footer-actions">
-              <Button
-                onClick={() => setShowTransferModal(true)}
-                variant="secondary"
-                disabled={guests.length === 0}
-              >
-                👑 Transferir Sala
-              </Button>
-              <Button
-                onClick={handleFinishRoom}
-                disabled={finishing || !room?.movies || room.movies.length === 0}
-                fullWidth
-              >
-                {finishing
-                  ? 'Finalizando...'
-                  : '🎲 Finalizar e Sortear Vencedor'}
-              </Button>
-            </div>
-            {(!room?.movies || room.movies.length === 0) && (
-              <p className="finish-warning">
-                Adicione pelo menos um filme antes de finalizar
-              </p>
-            )}
-          </div>
+          <RoomFooter
+            onTransfer={() => setShowTransferModal(true)}
+            onFinish={handleFinishRoom}
+            canFinish={!!room?.movies && room.movies.length > 0}
+            hasGuests={guests.length > 0}
+            finishing={finishing}
+          />
         )}
       </div>
 
