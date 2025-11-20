@@ -18,4 +18,11 @@ export class RoomUserRepository {
       where: { id },
     });
   }
+
+  async updateRole(userId: string, newRole: UserRole) {
+    return await prisma.roomUser.update({
+      where: { id: userId },
+      data: { role: newRole },
+    });
+  }
 }
