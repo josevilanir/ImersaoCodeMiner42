@@ -9,6 +9,7 @@ import { Loading } from '../components/ui/Loading';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
 import { TransferOwnershipModal } from '../components/TransferOwnershipModal';
 import type { RoomDetails, Movie } from '../@types';
+import { RoomHeader } from '../components/room/RoomHeader';
 import './Room.css';
 
 export function Room() {
@@ -208,28 +209,13 @@ async function fetchRoom(isPolling = false) {
   return (
     <div className="room-container">
       <div className="room-content">
-        <div className="room-header">
-          <div className="room-header-info">
-            <h1 className="room-title">
-              {isFinished ? '🏆 Sala Finalizada' : '🎬 Movie Night'}
-            </h1>
-            <div className="room-code">
-              <span>Código:</span>
-              <strong>{room.room.code}</strong>
-              <button
-                onClick={handleCopyCode}
-                className="copy-button"
-                title="Copiar código"
-              >
-                {copied ? '✓' : '📋'}
-              </button>
-              {copied && <span className="copied-feedback">Copiado!</span>}
-            </div>
-          </div>
-          <Button onClick={handleLeaveRoom} variant="danger">
-            Sair
-          </Button>
-        </div>
+        <RoomHeader
+          isFinished={isFinished}
+          roomCode={room.room.code}
+          copied={copied}
+          onCopyCode={handleCopyCode}
+          onLeave={handleLeaveRoom}
+        />
 
         {isFinished && room.room.winnerMovie && (
           <Card className="winner-card">

@@ -1,0 +1,84 @@
+.room-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #374151;
+}
+
+.room-header-info {
+  flex: 1;
+}
+
+.room-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #f9fafb;
+  margin-bottom: 0.5rem;
+}
+
+.room-code {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: #9ca3af;
+}
+
+.room-code strong {
+  font-size: 1.25rem;
+  color: #10b981;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+}
+
+.copy-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s;
+}
+
+.copy-button:hover {
+  transform: scale(1.2);
+}
+
+.copied-feedback {
+  color: #10b981;
+  font-size: 0.875rem;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .room-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .room-title {
+    font-size: 1.5rem;
+  }
+
+  .room-code {
+    flex-wrap: wrap;
+  }
+}
