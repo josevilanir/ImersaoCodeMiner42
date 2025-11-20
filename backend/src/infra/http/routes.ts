@@ -29,7 +29,15 @@ routes.delete('/api/v1/rooms/:code/movies/:movieId', authMiddleware, (req, res) 
   roomsController.deleteMovie(req, res)
 );
 
+routes.post('/api/v1/refresh-token', authMiddleware, (req, res) =>
+  roomsController.refreshToken(req, res)
+);
+
 // Rotas exclusivas do host
+routes.post('/api/v1/rooms/:code/transfer', authMiddleware, ensureHostMiddleware, (req, res) =>
+  roomsController.transferOwnership(req, res)
+);
+
 routes.post('/api/v1/rooms/:code/finish', authMiddleware, ensureHostMiddleware, (req, res) =>
   roomsController.finishRoom(req, res)
 );
