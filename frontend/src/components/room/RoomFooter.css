@@ -1,0 +1,24 @@
+.room-footer {
+  margin-top: 2rem;
+  padding: 0 0.5rem;
+}
+
+.room-footer-actions {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.finish-warning {
+  color: #fbbf24;
+  font-size: 0.875rem;
+  text-align: center;
+  margin-top: 0.75rem;
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .room-footer-actions {
+    flex-direction: column;
+  }
+}

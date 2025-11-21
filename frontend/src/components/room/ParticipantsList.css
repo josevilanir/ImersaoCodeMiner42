@@ -1,0 +1,67 @@
+.users-card {
+  background-color: #1f2937;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+}
+
+.users-card h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #f9fafb;
+  margin-bottom: 1rem;
+}
+
+.users-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.user-item {
+  padding: 0.75rem;
+  background-color: #374151;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.user-item:hover {
+  background-color: #4b5563;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-indicator {
+  color: #10b981;
+  font-size: 0.875rem;
+  font-weight: bold;
+  animation: pulse 2s ease-in-out infinite;
+  line-height: 1;
+}
+
+.user-name {
+  flex: 1;
+  color: #f9fafb;
+  font-weight: 500;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.user-item:has(.user-indicator) {
+  background-color: rgba(16, 185, 129, 0.1);
+  border-left: 3px solid #10b981;
+  padding-left: calc(0.75rem - 3px);
+}
