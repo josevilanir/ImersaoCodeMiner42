@@ -16,6 +16,10 @@ routes.post('/api/v1/rooms/join', (req, res) =>
   roomsController.joinRoom(req, res)
 );
 
+routes.post('/api/v1/auth/login', (req, res) => 
+  roomsController.login(req, res)
+);
+
 // Rotas autenticadas
 routes.get('/api/v1/rooms/:code', authMiddleware, (req, res) => 
   roomsController.getRoom(req, res)

@@ -38,6 +38,8 @@ model RoomUser {
   id          String   @id @default(uuid())
   roomId      String   @map("room_id")
   displayName String   @map("display_name")
+  username    String?  @unique
+  password    String?
   role        UserRole
   createdAt   DateTime @default(now()) @map("created_at")
 

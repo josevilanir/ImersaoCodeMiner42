@@ -1,3 +1,4 @@
+import { LoginUseCase } from '../useCases/LoginUseCase';
 import { Request, Response } from 'express';
 import { RoomRepository } from '../../../domain/room/RoomRepository';
 import { RoomUserRepository } from '../../../domain/roomUser/RoomUserRepository';
@@ -203,4 +204,22 @@ export class RoomsController {
       error: null,
     });
   }
+
+  async login(req: Request, res: Response) {
+    const { username, password } = req.body;
+
+    const roomUserRepository = new RoomUserRepository();
+    const useCase = new LoginUseCase(roomUserRepository);
+
+    const result = await useCase.execute({
+      username,
+      password,
+    });
+
+    return res.status(200).json({
+      data: result,
+      error: null,
+    });
+  }
+  
 }
