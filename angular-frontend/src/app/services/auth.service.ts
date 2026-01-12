@@ -27,17 +27,17 @@ export class AuthService {
   /**
    * Realiza login com username e senha
    */
-  login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(
+  login(credentials: LoginRequest): Observable<any> {  // 👈 Mudei para 'any'
+    return this.http.post<any>(  // 👈 Mudei para 'any'
       `${environment.apiUrl}/auth/login`,
       credentials
     ).pipe(
       tap(response => {
-        this.setSession(response);
-      })
-    );
-  }
-
+        console.log('✅ Resposta recebida:', response);
+      this.setSession(response.data);
+    })
+  );
+}
   /**
    * Realiza logout
    */
@@ -78,10 +78,10 @@ export class AuthService {
   /**
    * Salva sessão do usuário
    */
-  private setSession(response: LoginResponse): void {
-    localStorage.setItem(this.TOKEN_KEY, response.token);
-    localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
-    this.currentUserSubject.next(response.user);
+  private setSession(data: { user: User; token: string }): void {  // 👈 Mudei o tipo
+    localStorage.setItem(this.TOKEN_KEY, data.token);
+    localStorage.setItem(this.USER_KEY, JSON.stringify(data.user));
+    this.currentUserSubject.next(data.user);
   }
 
   /**

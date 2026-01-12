@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';  // 👈 ADICIONE
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';  // 👈 ADICIONE FormsModule
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,7 +19,6 @@ import { AuthGuard } from './guards/auth.guard';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 
 @NgModule({
-  declarations: [],
   imports: [
     BrowserModule,
     CommonModule,
@@ -27,6 +26,7 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
+    AppComponent,
     LoginComponent,
     DashboardComponent
   ],

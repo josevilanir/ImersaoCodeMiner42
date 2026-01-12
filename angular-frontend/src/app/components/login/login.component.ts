@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule]
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
@@ -48,32 +51,30 @@ export class LoginComponent implements OnInit {
    * Submete o formulário de login
    */
   onSubmit(): void {
-    // Limpa mensagens de erro anteriores
-    this.errorMessage = '';
+  this.errorMessage = '';
 
-    // Valida o formulário
-    if (this.loginForm.invalid) {
-      this.errorMessage = 'Por favor, preencha todos os campos corretamente.';
-      return;
-    }
-
-    // Inicia o loading
-    this.loading = true;
-
-    // Faz a requisição de login
-    this.authService.login(this.loginForm.value).subscribe({
-      next: (response) => {
-        console.log('Login bem-sucedido!', response);
-        this.router.navigate([this.returnUrl]);
-      },
-      error: (error) => {
-        console.error('Erro no login:', error);
-        this.errorMessage = error.error?.message || 'Usuário ou senha inválidos.';
-        this.loading = false;
-      },
-      complete: () => {
-        this.loading = false;
-      }
-    });
+  if (this.loginForm.invalid) {
+    this.errorMessage = 'Por favor, preencha todos os campos corretamente.';
+    return;
   }
+
+  this.loading = true;
+
+  console.log('🔵 Enviando login:', this.loginForm.value); // 👈 ADICIONE
+
+  this.authService.login(this.loginForm.value).subscribe({
+    next: (response) => {
+      console.log('✅ Login bem-sucedido!', response); // 👈 JÁ TEM
+      this.router.navigate([this.returnUrl]);
+    },
+    error: (error) => {
+      console.error('❌ Erro no login:', error); // 👈 JÁ TEM
+      this.errorMessage = error.error?.message || 'Usuário ou senha inválidos.';
+      this.loading = false;
+    },
+    complete: () => {
+      this.loading = false;
+    }
+  });
+}
 }
