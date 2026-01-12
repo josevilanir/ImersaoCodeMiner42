@@ -25,4 +25,11 @@ export class RoomUserRepository {
       data: { role: newRole },
     });
   }
+
+  async findByUsername(username: string) {
+    return await prisma.roomUser.findUnique({
+      where: { username }
+    });
+  }
+  
 }
