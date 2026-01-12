@@ -1,0 +1,67 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>🎬 Movie Night</h1>
+      <p>Faça login para continuar</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Campo Username -->
+      <div class="form-group">
+        <label for="username">Usuário</label>
+        <input
+          type="text"
+          id="username"
+          formControlName="username"
+          class="form-control"
+          [class.is-invalid]="f['username'].invalid && f['username'].touched"
+          placeholder="Digite seu usuário"
+          autocomplete="username"
+        />
+        <div class="invalid-feedback" *ngIf="f['username'].invalid && f['username'].touched">
+          <span *ngIf="f['username'].errors?.['required']">Usuário é obrigatório</span>
+          <span *ngIf="f['username'].errors?.['minlength']">Usuário deve ter no mínimo 3 caracteres</span>
+        </div>
+      </div>
+
+      <!-- Campo Password -->
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="form-control"
+          [class.is-invalid]="f['password'].invalid && f['password'].touched"
+          placeholder="Digite sua senha"
+          autocomplete="current-password"
+        />
+        <div class="invalid-feedback" *ngIf="f['password'].invalid && f['password'].touched">
+          <span *ngIf="f['password'].errors?.['required']">Senha é obrigatória</span>
+          <span *ngIf="f['password'].errors?.['minlength']">Senha deve ter no mínimo 4 caracteres</span>
+        </div>
+      </div>
+
+      <!-- Mensagem de erro -->
+      <div class="alert alert-danger" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Botão de submit -->
+      <button
+        type="submit"
+        class="btn btn-primary btn-block"
+        [disabled]="loading || loginForm.invalid"
+      >
+        <span *ngIf="!loading">Entrar</span>
+        <span *ngIf="loading">
+          <span class="spinner"></span> Entrando...
+        </span>
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p>Usuário de teste: <strong>admin</strong> / Senha: <strong>admin123</strong></p>
+    </div>
+  </div>
+</div>
