@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RoomService } from '../../services/room.service';
 import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-join-room',
@@ -12,17 +12,15 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule]
 })
-export class JoinRoomComponent implements OnInit {
+export class JoinRoom implements OnInit {
+  private formBuilder = inject(FormBuilder);
+  private roomService = inject(RoomService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
   joinForm!: FormGroup;
   loading = false;
   errorMessage = '';
-
-  constructor(
-    private formBuilder: FormBuilder,
-    private roomService: RoomService,
-    private authService: AuthService,
-    private router: Router
-  ) {}
 
   ngOnInit(): void {
     const currentUser = this.authService.getCurrentUser();
@@ -53,7 +51,6 @@ export class JoinRoomComponent implements OnInit {
       next: (response) => {
         console.log('Entrou na sala:', response);
         
-        // Atualizar token
         if (response.data.token) {
           this.authService.updateToken(response.data.token, response.data.user.role);
         }
@@ -73,7 +70,6 @@ export class JoinRoomComponent implements OnInit {
   }
 
   onRoomCodeInput(event: any): void {
-    // Converter para maiúsculas automaticamente
     const value = event.target.value.toUpperCase();
     this.joinForm.patchValue({ roomCode: value });
   }

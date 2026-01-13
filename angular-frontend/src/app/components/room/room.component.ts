@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RoomService } from '../../services/room.service';
@@ -12,7 +12,13 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule]
 })
-export class RoomComponent implements OnInit, OnDestroy {
+export class Room implements OnInit, OnDestroy { 
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private formBuilder = inject(FormBuilder);
+  private roomService = inject(RoomService);
+  private cdr = inject(ChangeDetectorRef);
+
   roomCode: string = '';
   room: any = null;
   loading = true;
@@ -24,14 +30,6 @@ export class RoomComponent implements OnInit, OnDestroy {
   deletingMovieId: string | null = null;
   
   private pollingSubscription?: Subscription;
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private formBuilder: FormBuilder,
-    private roomService: RoomService,
-    private cdr: ChangeDetectorRef
-  ) {}
 
   ngOnInit(): void {
     this.roomCode = this.route.snapshot.params['code'];
@@ -72,21 +70,21 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.room = response.data;
           this.loading = false;
           this.error = '';
-          this.cdr.detectChanges();  // 👈 ADICIONE
+          this.cdr.detectChanges();
           console.log('✅ Room atualizado:', this.room);
           console.log('✅ Loading agora é:', this.loading);
         } else {
           console.error('❌ Resposta sem dados!', response);
           this.error = 'Dados da sala inválidos';
           this.loading = false;
-          this.cdr.detectChanges();  // 👈 ADICIONE
+          this.cdr.detectChanges();
         }
       },
       error: (error) => {
         console.error('❌ Erro ao buscar sala:', error);
         this.error = 'Erro ao carregar sala';
         this.loading = false;
-        this.cdr.detectChanges();  // 👈 ADICIONE
+        this.cdr.detectChanges();
       }
     });
   }

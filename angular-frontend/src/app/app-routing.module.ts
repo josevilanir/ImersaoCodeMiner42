@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './components/login/login.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { HomeComponent } from './components/home/home.component';
-import { CreateRoomComponent } from './components/create-room/create-room.component';
-import { JoinRoomComponent } from './components/join-room/join-room.component';
-import { RoomComponent } from './components/room/room.component';
-import { AuthGuard } from './guards/auth.guard';
+import { Login } from './components/login/login.component';
+import { Dashboard } from './components/dashboard/dashboard.component';
+import { Home } from './components/home/home.component';
+import { CreateRoom } from './components/create-room/create-room.component';
+import { JoinRoom } from './components/join-room/join-room.component';
+import { Room } from './components/room/room.component';
+import { authGuard } from './guards/auth.guard';  // 👈 Importar como função
 
 const routes: Routes = [
   {
@@ -16,27 +16,27 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: Login
   },
   {
     path: 'home',
-    component: HomeComponent,
-    canActivate: [AuthGuard]
+    component: Home,
+    canActivate: [authGuard]  // 👈 Usar como função
   },
   {
     path: 'rooms/create',
-    component: CreateRoomComponent,
-    canActivate: [AuthGuard]
+    component: CreateRoom,
+    canActivate: [authGuard]
   },
   {
     path: 'rooms/join',
-    component: JoinRoomComponent,
-    canActivate: [AuthGuard]
+    component: JoinRoom,
+    canActivate: [authGuard]
   },
   {
     path: 'rooms/:code',
-    component: RoomComponent,
-    canActivate: [AuthGuard]
+    component: Room,
+    canActivate: [authGuard]
   },
   {
     path: 'dashboard',

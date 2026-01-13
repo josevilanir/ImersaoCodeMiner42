@@ -10,7 +10,7 @@ import { User } from '../../models/user.model';
   standalone: true,
   imports: [CommonModule]
 })
-export class DashboardComponent implements OnInit {
+export class Dashboard implements OnInit {
   currentUser: User | null = null;
 
   constructor(private authService: AuthService) {}
