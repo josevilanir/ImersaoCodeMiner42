@@ -1,0 +1,49 @@
+<div class="create-room-container">
+  <div class="create-room-card">
+    <h1>Criar Nova Sala</h1>
+    <p class="subtitle">Digite seu nome para criar uma sessão</p>
+
+    <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="create-room-form">
+      <div class="form-group">
+        <label for="hostName">Seu nome</label>
+        <input
+          type="text"
+          id="hostName"
+          formControlName="hostName"
+          class="form-control"
+          [class.is-invalid]="f['hostName'].invalid && f['hostName'].touched"
+          placeholder="Ex: João"
+          autocomplete="name"
+        />
+        <div class="invalid-feedback" *ngIf="f['hostName'].invalid && f['hostName'].touched">
+          <span *ngIf="f['hostName'].errors?.['required']">Nome é obrigatório</span>
+          <span *ngIf="f['hostName'].errors?.['minlength']">Nome deve ter no mínimo 3 caracteres</span>
+        </div>
+      </div>
+
+      <div class="alert alert-danger" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary btn-block"
+        [disabled]="loading || createForm.invalid"
+      >
+        <span *ngIf="!loading">Criar Sala</span>
+        <span *ngIf="loading">
+          <span class="spinner"></span> Criando...
+        </span>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary btn-block"
+        (click)="goBack()"
+        [disabled]="loading"
+      >
+        Voltar
+      </button>
+    </form>
+  </div>
+</div>

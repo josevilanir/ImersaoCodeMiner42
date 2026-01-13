@@ -1,0 +1,30 @@
+<div class="home-container">
+  <header class="home-header">
+    <h1>🎬 Movie Night</h1>
+    <div class="user-info">
+      <span>Olá, <strong>{{ currentUser?.displayName }}</strong>!</span>
+      <button class="btn-logout" (click)="logout()">Sair</button>
+    </div>
+  </header>
+
+  <main class="home-main">
+    <div class="home-content">
+      <h2>Escolha uma opção</h2>
+      <p>Crie uma nova sala ou entre em uma existente</p>
+
+      <div class="action-cards">
+        <div class="action-card" (click)="goToCreateRoom()">
+          <div class="card-icon">➕</div>
+          <h3>Criar Sala</h3>
+          <p>Crie uma nova sala e convide seus amigos</p>
+        </div>
+
+        <div class="action-card" (click)="goToJoinRoom()">
+          <div class="card-icon">🚪</div>
+          <h3>Entrar em Sala</h3>
+          <p>Entre em uma sala existente com o código</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

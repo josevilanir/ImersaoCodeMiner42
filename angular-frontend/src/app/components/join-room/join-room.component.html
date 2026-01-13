@@ -1,0 +1,70 @@
+<div class="join-room-container">
+  <div class="join-room-card">
+    <h1>Entrar em Sala</h1>
+    <p class="subtitle">Digite o código da sala e seu nome para participar</p>
+
+    <form [formGroup]="joinForm" (ngSubmit)="onSubmit()" class="join-room-form">
+      <div class="form-group">
+        <label for="roomCode">Código da sala</label>
+        <input
+          type="text"
+          id="roomCode"
+          formControlName="roomCode"
+          (input)="onRoomCodeInput($event)"
+          class="form-control code-input"
+          [class.is-invalid]="f['roomCode'].invalid && f['roomCode'].touched"
+          placeholder="Ex: ABC12"
+          maxlength="5"
+          autocomplete="off"
+        />
+        <div class="invalid-feedback" *ngIf="f['roomCode'].invalid && f['roomCode'].touched">
+          <span *ngIf="f['roomCode'].errors?.['required']">Código é obrigatório</span>
+          <span *ngIf="f['roomCode'].errors?.['minlength'] || f['roomCode'].errors?.['maxlength']">
+            Código deve ter exatamente 5 caracteres
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="displayName">Seu nome</label>
+        <input
+          type="text"
+          id="displayName"
+          formControlName="displayName"
+          class="form-control"
+          [class.is-invalid]="f['displayName'].invalid && f['displayName'].touched"
+          placeholder="Ex: Maria"
+          autocomplete="name"
+        />
+        <div class="invalid-feedback" *ngIf="f['displayName'].invalid && f['displayName'].touched">
+          <span *ngIf="f['displayName'].errors?.['required']">Nome é obrigatório</span>
+          <span *ngIf="f['displayName'].errors?.['minlength']">Nome deve ter no mínimo 3 caracteres</span>
+        </div>
+      </div>
+
+      <div class="alert alert-danger" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary btn-block"
+        [disabled]="loading || joinForm.invalid"
+      >
+        <span *ngIf="!loading">Entrar na Sala</span>
+        <span *ngIf="loading">
+          <span class="spinner"></span> Entrando...
+        </span>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary btn-block"
+        (click)="goBack()"
+        [disabled]="loading"
+      >
+        Voltar
+      </button>
+    </form>
+  </div>
+</div>
