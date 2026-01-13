@@ -111,4 +111,16 @@ export class AuthService {
       return true;
     }
   }
+
+  /**
+ * Atualiza o token e role do usuário
+ */
+  updateToken(token: string, role: string): void {
+    localStorage.setItem(this.TOKEN_KEY, token);
+    const user = this.getCurrentUser();
+    if (user) {
+      localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+    }
+  }
+
 }

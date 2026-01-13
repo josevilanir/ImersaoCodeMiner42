@@ -2,30 +2,47 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { HomeComponent } from './components/home/home.component';
+import { CreateRoomComponent } from './components/create-room/create-room.component';
+import { JoinRoomComponent } from './components/join-room/join-room.component';
+import { RoomComponent } from './components/room/room.component';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
-  // Rota padrão redireciona para login
   {
     path: '',
     redirectTo: '/login',
     pathMatch: 'full'
   },
-  
-  // Rota de login (pública)
   {
     path: 'login',
     component: LoginComponent
   },
-  
-  // Rota de dashboard (protegida com AuthGuard)
+  {
+    path: 'home',
+    component: HomeComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'rooms/create',
+    component: CreateRoomComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'rooms/join',
+    component: JoinRoomComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'rooms/:code',
+    component: RoomComponent,
+    canActivate: [AuthGuard]
+  },
   {
     path: 'dashboard',
-    component: DashboardComponent,
-    canActivate: [AuthGuard] // <-- Guard protegendo a rota
+    redirectTo: '/home',
+    pathMatch: 'full'
   },
-
-  // Rota 404 (não encontrada)
   {
     path: '**',
     redirectTo: '/login'
