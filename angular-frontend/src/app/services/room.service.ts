@@ -40,7 +40,7 @@ export class RoomService {
    */
   getRoomWithPolling(code: string): Observable<any> {
     return interval(3000).pipe(
-      startWith(0),
+      startWith(0), 
       switchMap(() => this.getRoom(code))
     );
   }

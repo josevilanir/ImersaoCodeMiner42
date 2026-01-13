@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RoomService } from '../../services/room.service';
 import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-room',
@@ -29,7 +29,8 @@ export class RoomComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
-    private roomService: RoomService
+    private roomService: RoomService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -60,16 +61,32 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   startPolling(): void {
+    console.log('🔵 Iniciando polling para sala:', this.roomCode);
+    
     this.pollingSubscription = this.roomService.getRoomWithPolling(this.roomCode).subscribe({
       next: (response) => {
-        this.room = response.data;
-        this.loading = false;
-        this.error = '';
+        console.log('✅ Resposta recebida:', response);
+        console.log('✅ response.data:', response.data);
+        
+        if (response && response.data) {
+          this.room = response.data;
+          this.loading = false;
+          this.error = '';
+          this.cdr.detectChanges();  // 👈 ADICIONE
+          console.log('✅ Room atualizado:', this.room);
+          console.log('✅ Loading agora é:', this.loading);
+        } else {
+          console.error('❌ Resposta sem dados!', response);
+          this.error = 'Dados da sala inválidos';
+          this.loading = false;
+          this.cdr.detectChanges();  // 👈 ADICIONE
+        }
       },
       error: (error) => {
-        console.error('Erro ao buscar sala:', error);
+        console.error('❌ Erro ao buscar sala:', error);
         this.error = 'Erro ao carregar sala';
         this.loading = false;
+        this.cdr.detectChanges();  // 👈 ADICIONE
       }
     });
   }

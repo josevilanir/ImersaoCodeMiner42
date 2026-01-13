@@ -18,7 +18,7 @@
     <!-- Header -->
     <header class="room-header">
       <div class="header-left">
-        <h1>🎬 {{ room.room.code }}</h1>
+        <h1>🎬 {{ room?.room?.code || roomCode }}</h1>
         <button class="btn-copy" (click)="copyRoomCode()" title="Copiar código">
           📋
         </button>
@@ -27,7 +27,7 @@
     </header>
 
     <!-- Winner (if finished) -->
-    <div *ngIf="isFinished && room.room.winnerMovie" class="winner-section">
+    <div *ngIf="isFinished && room?.room?.winnerMovie" class="winner-section">
       <div class="winner-card">
         <div class="winner-icon">🏆</div>
         <h2>Filme Vencedor!</h2>
@@ -42,7 +42,7 @@
     <div class="room-main">
       <!-- Left Column: Movies -->
       <div class="room-section movies-section">
-        <h2>🍿 Filmes Sugeridos ({{ room.movies.length }})</h2>
+        <h2>🍿 Filmes Sugeridos ({{ room?.movies?.length || 0 }})</h2>
 
         <!-- Add Movie Form (only if not finished) -->
         <div *ngIf="!isFinished" class="add-movie-form">
@@ -76,23 +76,23 @@
 
         <!-- Movies List -->
         <div class="movies-list">
-          <div *ngIf="room.movies.length === 0" class="empty-state">
+          <div *ngIf="!room?.movies || room.movies.length === 0" class="empty-state">
             <p>Nenhum filme sugerido ainda</p>
             <p class="hint">Seja o primeiro a adicionar! 🎬</p>
           </div>
 
           <div
-            *ngFor="let movie of room.movies"
+            *ngFor="let movie of room?.movies"
             class="movie-card"
             [class.deleting]="deletingMovieId === movie.id"
           >
             <div class="movie-info">
               <h4>{{ movie.title }}</h4>
               <p *ngIf="movie.year" class="movie-year">{{ movie.year }}</p>
-              <p class="movie-author">por {{ movie.suggestedBy.displayName }}</p>
+              <p class="movie-author">por {{ movie?.suggestedBy?.displayName }}</p>
             </div>
             <button
-              *ngIf="!isFinished && (isHost || movie.suggestedBy.id === room.currentUser.id)"
+              *ngIf="!isFinished && (isHost || movie?.suggestedBy?.id === room?.currentUser?.id)"
               class="btn-delete"
               (click)="onDeleteMovie(movie.id)"
               [disabled]="deletingMovieId === movie.id"
@@ -104,7 +104,7 @@
 
         <!-- Finish Button (only host) -->
         <button
-          *ngIf="!isFinished && isHost && room.movies.length > 0"
+          *ngIf="!isFinished && isHost && room?.movies && room.movies.length > 0"
           class="btn btn-finish"
           (click)="onFinishRoom()"
           [disabled]="finishing"
@@ -118,22 +118,22 @@
 
       <!-- Right Column: Participants -->
       <div class="room-section participants-section">
-        <h2>👥 Participantes ({{ room.users.length }})</h2>
+        <h2>👥 Participantes ({{ room?.users?.length || 0 }})</h2>
         
         <div class="participants-list">
           <div
-            *ngFor="let user of room.users"
+            *ngFor="let user of room?.users"
             class="participant-card"
             [class.is-host]="user.role === 'HOST'"
-            [class.is-you]="user.id === room.currentUser.id"
+            [class.is-you]="user.id === room?.currentUser?.id"
           >
             <div class="participant-avatar">
-              {{ user.displayName.charAt(0).toUpperCase() }}
+              {{ user?.displayName?.charAt(0)?.toUpperCase() }}
             </div>
             <div class="participant-info">
               <span class="participant-name">
                 {{ user.displayName }}
-                <span *ngIf="user.id === room.currentUser.id" class="badge-you">você</span>
+                <span *ngIf="user.id === room?.currentUser?.id" class="badge-you">você</span>
               </span>
               <span *ngIf="user.role === 'HOST'" class="badge-host">👑 Host</span>
             </div>
@@ -142,7 +142,7 @@
 
         <div class="room-info">
           <p><strong>Status:</strong> {{ isFinished ? '✅ Finalizada' : '🟢 Ativa' }}</p>
-          <p><strong>Código:</strong> {{ room.room.code }}</p>
+          <p><strong>Código:</strong> {{ room?.room?.code || roomCode }}</p>
         </div>
       </div>
     </div>

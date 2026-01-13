@@ -9,38 +9,33 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    // Pega o token do AuthService
     const token = this.authService.getToken();
-
-    // Se tiver token, adiciona no header Authorization
+    
+    // Adicionar token e desabilitar cache
     if (token) {
       request = request.clone({
         setHeaders: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
+          'Cache-Control': 'no-cache, no-store, must-revalidate',  // 👈 ADICIONE
+          'Pragma': 'no-cache',                                      // 👈 ADICIONE
+          'Expires': '0'                                             // 👈 ADICIONE
         }
       });
     }
 
-    // Continua com a requisição e trata erros
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Se retornar 401 (não autorizado), faz logout
+        // Se receber 401, fazer logout
         if (error.status === 401) {
-          console.error('Token inválido ou expirado. Redirecionando para login...');
           this.authService.logout();
         }
-
         return throwError(() => error);
       })
     );

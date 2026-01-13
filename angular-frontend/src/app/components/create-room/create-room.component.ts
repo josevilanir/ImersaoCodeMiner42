@@ -37,34 +37,51 @@ export class CreateRoomComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.errorMessage = '';
+  this.errorMessage = '';
 
-    if (this.createForm.invalid) {
-      this.errorMessage = 'Por favor, preencha seu nome.';
-      return;
-    }
-
-    this.loading = true;
-
-    this.roomService.createRoom(this.createForm.value.hostName).subscribe({
-      next: (response) => {
-        console.log('Sala criada:', response);
-        const roomCode = response.data.room.code;
-        
-        // Atualizar token se necessário
-        if (response.data.token) {
-          this.authService.updateToken(response.data.token, response.data.hostUser.role);
-        }
-        
-        this.router.navigate(['/rooms', roomCode]);
-      },
-      error: (error) => {
-        console.error('Erro ao criar sala:', error);
-        this.errorMessage = error.error?.error || 'Erro ao criar sala';
-        this.loading = false;
-      }
-    });
+  if (this.createForm.invalid) {
+    this.errorMessage = 'Por favor, preencha seu nome.';
+    return;
   }
+
+  this.loading = true;
+
+  this.roomService.createRoom(this.createForm.value.hostName).subscribe({
+    next: (response) => {
+      console.log('✅ Sala criada - Resposta completa:', response);
+      console.log('✅ Dados:', response.data);
+      
+      // Verificar estrutura da resposta
+      const roomCode = response.data?.room?.code || response.data?.code;
+      console.log('✅ Código da sala:', roomCode);
+      
+      if (!roomCode) {
+        console.error('❌ Código da sala não encontrado na resposta!');
+        this.errorMessage = 'Erro ao obter código da sala';
+        this.loading = false;
+        return;
+      }
+      
+      // Atualizar token se necessário
+      if (response.data?.token) {
+        const role = response.data?.hostUser?.role || response.data?.user?.role || 'HOST';
+        this.authService.updateToken(response.data.token, role);
+        console.log('✅ Token atualizado');
+      }
+      
+      console.log('✅ Navegando para /rooms/' + roomCode);
+      this.router.navigate(['/rooms', roomCode]).then(
+        () => console.log('✅ Navegação concluída'),
+        (err) => console.error('❌ Erro na navegação:', err)
+      );
+    },
+    error: (error) => {
+      console.error('❌ Erro ao criar sala:', error);
+      this.errorMessage = error.error?.error || 'Erro ao criar sala';
+      this.loading = false;
+    }
+  });
+}
 
   goBack(): void {
     this.router.navigate(['/home']);
