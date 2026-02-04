@@ -15,14 +15,14 @@ export class RoomService {
    * Criar nova sala
    */
   createRoom(hostName: string): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/rooms`, { hostName });
+    return this.http.post(`${environment.apiUrl}/api/v1/rooms`, { hostName });
   }
 
   /**
    * Entrar em sala existente
    */
   joinRoom(roomCode: string, displayName: string): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/rooms/join`, {
+    return this.http.post(`${environment.apiUrl}/api/v1/rooms/join`, {
       roomCode,
       displayName
     });
@@ -32,7 +32,7 @@ export class RoomService {
    * Buscar detalhes da sala
    */
   getRoom(code: string): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/rooms/${code}`);
+    return this.http.get(`${environment.apiUrl}/api/v1/rooms/${code}`);
   }
 
   /**
@@ -49,7 +49,7 @@ export class RoomService {
    * Adicionar filme na sala
    */
   addMovie(code: string, title: string, year?: number): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/rooms/${code}/movies`, {
+    return this.http.post(`${environment.apiUrl}/api/v1/rooms/${code}/movies`, {
       title,
       year
     });
@@ -59,21 +59,21 @@ export class RoomService {
    * Deletar filme
    */
   deleteMovie(code: string, movieId: string): Observable<any> {
-    return this.http.delete(`${environment.apiUrl}/rooms/${code}/movies/${movieId}`);
+    return this.http.delete(`${environment.apiUrl}/api/v1/rooms/${code}/movies/${movieId}`);
   }
 
   /**
    * Finalizar sala e sortear vencedor (apenas host)
    */
   finishRoom(code: string): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/rooms/${code}/finish`, {});
+    return this.http.post(`${environment.apiUrl}/api/v1/rooms/${code}/finish`, {});
   }
 
   /**
    * Transferir ownership da sala
    */
   transferOwnership(code: string, newHostId: string): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/rooms/${code}/transfer`, {
+    return this.http.post(`${environment.apiUrl}/api/v1/rooms/${code}/transfer`, {
       newHostId
     });
   }

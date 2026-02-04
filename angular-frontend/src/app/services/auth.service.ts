@@ -27,9 +27,9 @@ export class AuthService {
   /**
    * Realiza login com username e senha
    */
-  login(credentials: LoginRequest): Observable<any> {  // 👈 Mudei para 'any'
-    return this.http.post<any>(  // 👈 Mudei para 'any'
-      `${environment.apiUrl}/auth/login`,
+  login(credentials: LoginRequest): Observable<any> { 
+    return this.http.post<any>(
+      `${environment.apiUrl}/api/v1/auth/login`,
       credentials
     ).pipe(
       tap(response => {
