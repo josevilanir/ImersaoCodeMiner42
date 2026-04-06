@@ -11,7 +11,7 @@ app.use(cors({
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'http://localhost:5173',
-    process.env.FRONTEND_URL || ''
+    process.env.FRONTEND_URL ? (process.env.FRONTEND_URL.startsWith('http') ? process.env.FRONTEND_URL : `https://${process.env.FRONTEND_URL}`) : ''
   ].filter(Boolean) as string[],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
