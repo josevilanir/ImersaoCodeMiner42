@@ -12,7 +12,7 @@ import { MoviesList } from '../components/room/MoviesList';
 import { ParticipantsList } from '../components/room/ParticipantsList';
 import { RoomFooter } from '../components/room/RoomFooter';
 import { TransferOwnershipModal } from '../components/TransferOwnershipModal';
-import type { RoomDetails, Movie } from '../@types';
+import type { RoomDetails } from '../@types';
 import './Room.css';
 
 export function Room() {
