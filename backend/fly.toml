@@ -12,6 +12,7 @@ primary_region = 'gru'
 [env]
   NODE_ENV = 'production'
   PORT = '3333'
+  FRONTEND_URL = 'https://imersao-codeminer42.vercel.app'
 
 [http_service]
   internal_port = 3333
