@@ -4,7 +4,7 @@ export interface RoomEntity {
   id: string;
   code: string;
   status: RoomStatus;
-  hostId: string;
+  hostId: string | null;
   createdAt: Date;
   finishedAt: Date | null;
   winnerMovieId: string | null;

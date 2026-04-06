@@ -1,0 +1,28 @@
+# fly.toml app configuration file generated for movienight-api-divine-glade-9952 on 2026-04-06T12:43:54-03:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'movienight-api-divine-glade-9952'
+primary_region = 'gru'
+
+[build]
+  dockerfile = 'dockerfile'
+
+[env]
+  NODE_ENV = 'production'
+  PORT = '3333'
+
+[http_service]
+  internal_port = 3333
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+[[vm]]
+  memory = '512mb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 512
